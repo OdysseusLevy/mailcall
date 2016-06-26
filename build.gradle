@@ -1,0 +1,66 @@
+buildscript {
+	ext {
+		springBootVersion = '1.3.5.RELEASE'
+		kotlinVersion = '1.0.2'
+	}
+	repositories {
+		mavenCentral()
+        flatDir {
+            dirs 'lib'
+        }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+		classpath "io.spring.gradle:dependency-management-plugin:0.5.4.RELEASE"
+	}
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'spring-boot'
+apply plugin: "io.spring.dependency-management"
+
+jar {
+	baseName = 'mailcall'
+	version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+dependencyManagement {
+	imports {
+		mavenBom 'com.amazonaws:aws-java-sdk-bom:1.10.47'
+	}
+}
+
+subprojects {
+    tasks.withType(ScalaCompile) {
+        sourceCompatibility = "1.7"
+        targetCompatibility = "1.7"
+    }
+}
+
+dependencies {
+	//compile('org.springframework.boot:spring-boot-starter-security')
+	//compile('com.stormpath.spring:stormpath-default-spring-boot-starter:1.0.RC9.1')
+
+    compile project("dkim")
+
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile "javax.mail:javax.mail-api:1.5.5"
+    compile group: 'com.sun.mail', name: 'javax.mail', version: '1.5.5'
+    compile group: 'dnsjava', name: 'dnsjava', version: '2.1.7'
+
+    compile "org.apache.logging.log4j:log4j-api:2.5"
+    compile "org.apache.logging.log4j:log4j-core:2.5"
+	compile 'com.amazonaws:aws-java-sdk-dynamodb'
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+	compile("org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}")
+	testCompile('org.springframework.boot:spring-boot-starter-test') 
+}
+
+
