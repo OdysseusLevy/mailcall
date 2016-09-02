@@ -1,6 +1,7 @@
 package org.mailcall.dynamodb
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import com.amazonaws.services.dynamodbv2.document.Item
 import com.amazonaws.services.dynamodbv2.document.PrimaryKey
@@ -61,5 +62,11 @@ class DynamoDbHelper {
 }
 
 fun main(args : Array<String>) {
-    DynamoDbHelper().getWho();
+
+    val client = AmazonDynamoDBClient()
+    val mapper = DynamoDBMapper(client);
+
+    val item = mapper.load(DynamoTagsRecord::class.java, "odysseus@cosmosgame.org", "vfitzharris@netscape.net")
+
+    System.out.println(item)
 }

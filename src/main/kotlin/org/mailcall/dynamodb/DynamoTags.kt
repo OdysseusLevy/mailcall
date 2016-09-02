@@ -1,33 +1,43 @@
 package org.mailcall.dynamodb
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable
 import org.kale.api.Tags
+import java.util.*
+
 
 /**
  * @author Odysseus Levy (odysseus@cosmosgame.org)
  */
-class DynamoTags : Tags {
-    override fun addTag(tag: String, value: Any) {
-        throw UnsupportedOperationException()
+class DynamoTags(val tagSet: HashSet<String>, val values: HashMap<String, Any>) : Tags {
+
+
+    fun doUpdate() {
+//TODO
     }
 
     override fun hasTag(tag: String): Boolean {
-        throw UnsupportedOperationException()
+        return tagSet.contains(tag)
     }
 
     override fun removeTag(tag: String) {
-        throw UnsupportedOperationException()
+
+        if (tagSet.remove(tag))
+            doUpdate()
     }
 
     override fun getValue(key: String): Any {
-        throw UnsupportedOperationException()
+        return values.get(key) ?: ""
     }
 
     override fun setValue(key: String, value: Any) {
-        throw UnsupportedOperationException()
+        values.put(key, value)
+        doUpdate()
     }
 
     override fun getTags(): Set<String> {
-        throw UnsupportedOperationException()
+       return tagSet
     }
 
     override fun isValid(): Boolean {
@@ -35,7 +45,8 @@ class DynamoTags : Tags {
     }
 
     override fun addTag(tag: String) {
-        throw UnsupportedOperationException()
+        tagSet.add(tag)
+        doUpdate()
     }
 
 
